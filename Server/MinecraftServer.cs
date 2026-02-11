@@ -16,7 +16,7 @@ namespace betareborn.Server
     public abstract class MinecraftServer : Runnable, CommandOutput
     {
         public static Logger LOGGER = Logger.getLogger("Minecraft");
-        public static HashMap GIVE_COMMANDS_COOLDOWNS = [];
+        public HashMap GIVE_COMMANDS_COOLDOWNS = [];
         public ConnectionListener connections;
         public IServerConfiguration config;
         public ServerWorld[] worlds;
@@ -180,6 +180,10 @@ namespace betareborn.Server
                     saveWorlds();
                 }
             }
+
+            while (AsyncIO.isBlocked())
+            {
+            }
         }
 
         public void stop()
@@ -275,10 +279,6 @@ namespace betareborn.Server
                 {
                     var54.printStackTrace();
                 }
-                finally
-                {
-                    java.lang.System.exit(0);
-                }
             }
         }
 
@@ -308,6 +308,7 @@ namespace betareborn.Server
             }
 
             Vec3D.cleanUp();
+            AsyncIO.tick();
             ticks++;
 
             for (int var7 = 0; var7 < worlds.Length; var7++)

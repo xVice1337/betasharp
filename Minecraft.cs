@@ -96,6 +96,7 @@ namespace betareborn
         long systemTime = java.lang.System.currentTimeMillis();
         private int joinPlayerCounter = 0;
         private ImGuiController imGuiController;
+        public InternalServer? internalServer;
 
         public Minecraft(int var4, int var5, bool var6)
         {
@@ -440,6 +441,7 @@ namespace betareborn
         {
             try
             {
+                stopInternalServer();
                 statFileWriter.func_27175_b();
                 statFileWriter.syncStats();
 
@@ -850,6 +852,19 @@ namespace betareborn
                     leftClickCounter = 10000;
                     mouseTicksRan = ticksRan + 10000;
                 }
+            }
+        }
+
+        public void stopInternalServer()
+        {
+            if (internalServer != null)
+            {
+                internalServer.stop();
+                while (!internalServer.stopped)
+                {
+                    java.lang.Thread.sleep(1);
+                }
+                internalServer = null;
             }
         }
 
@@ -1416,21 +1431,7 @@ namespace betareborn
         {
             changeWorld1((World)null);
             java.lang.System.gc();
-            WorldStorage var5 = saveLoader.get(var1, false);
-            World var6 = null;
-            var6 = new World(var5, var2, var3);
-            if (var6.isNewWorld)
-            {
-                statFileWriter.readStat(Stats.Stats.createWorldStat, 1);
-                statFileWriter.readStat(Stats.Stats.startGameStat, 1);
-                changeWorld2(var6, "Generating level");
-            }
-            else
-            {
-                statFileWriter.readStat(Stats.Stats.loadWorldStat, 1);
-                statFileWriter.readStat(Stats.Stats.startGameStat, 1);
-                changeWorld2(var6, "Loading level");
-            }
+            displayGuiScreen(new GuiLevelLoading(var1, var2, var3));
         }
 
 
@@ -1791,8 +1792,6 @@ namespace betareborn
 
         public static void startMainThread(string var0, string var1, string var2)
         {
-            new RunServerThread(new InternalServer("internalServer", "world", "0", 10), "InternalServer").start();
-
             Minecraft mc = new(1920, 1080, false);
             java.lang.Thread var8 = new(mc, "Minecraft main thread");
             var8.setPriority(10);

@@ -33,11 +33,13 @@ namespace betareborn.Server.Internal
             serverConfiguration.SetViewDistance(viewDistanceChunks);
         }
 
+        public volatile bool isReady = false;
+
         protected override bool Init()
         {
             try
             {
-                connections = new ConnectionListener(this, InetAddress.getLocalHost(), 0);
+                connections = new ConnectionListener(this, InetAddress.getByName("127.0.0.1"), 0);
                 lock (portLock)
                 {
                     port = connections.port;
@@ -53,7 +55,12 @@ namespace betareborn.Server.Internal
 
             LOGGER.info($"Starting internal server on port {port}");
 
-            return base.Init();
+            bool result = base.Init();
+            if (result)
+            {
+                isReady = true;
+            }
+            return result;
         }
 
         public override java.io.File getFile(string path)
