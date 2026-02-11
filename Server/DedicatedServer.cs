@@ -13,6 +13,11 @@ namespace betareborn.Server
         {
         }
 
+        protected override PlayerManager CreatePlayerManager()
+        {
+            return new DedicatedPlayerManager(this);
+        }
+
         protected override bool Init()
         {
             ConsoleInputThread var1 = new(this);

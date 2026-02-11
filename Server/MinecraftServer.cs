@@ -50,7 +50,7 @@ namespace betareborn.Server
             pvpEnabled = config.GetPvpEnabled(true);
             flightEnabled = config.GetAllowFlight(false);
 
-            playerManager = new PlayerManager(this);
+            playerManager = CreatePlayerManager();
             entityTrackers[0] = new EntityTracker(this, 0);
             entityTrackers[1] = new EntityTracker(this, -1);
             long var5 = java.lang.System.nanoTime();
@@ -401,5 +401,10 @@ namespace betareborn.Server
         {
             return dimensionId == -1 ? entityTrackers[1] : entityTrackers[0];
         }
+        protected virtual PlayerManager CreatePlayerManager()
+        {
+            return new PlayerManager(this);
+        }
+
     }
 }

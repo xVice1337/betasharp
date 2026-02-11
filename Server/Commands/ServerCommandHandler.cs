@@ -121,9 +121,9 @@ namespace betareborn.Server.Commands
                 string var25 = var2.Substring(var2.IndexOf(" ")).Trim();
                 ServerPlayerEntity var33 = null;
 
-                for (int var8 = 0; var8 < var5.players.size(); var8++)
+                for (int var8 = 0; var8 < var5.players.Count; var8++)
                 {
-                    ServerPlayerEntity var9 = (ServerPlayerEntity)var5.players.get(var8);
+                    ServerPlayerEntity var9 = var5.players[var8];
                     if (var9.name.EqualsIgnoreCase(var25))
                     {
                         var33 = var9;

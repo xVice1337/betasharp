@@ -17,6 +17,8 @@ using betareborn.Entities;
 using betareborn.Items;
 using betareborn.Launcher;
 using betareborn.Profiling;
+using betareborn.Server.Internal;
+using betareborn.Server.Threading;
 using betareborn.Stats;
 using betareborn.Util.Hit;
 using betareborn.Util.Maths;
@@ -1789,6 +1791,8 @@ namespace betareborn
 
         public static void startMainThread(string var0, string var1, string var2)
         {
+            new RunServerThread(new InternalServer("internalServer", "world", "0", 10), "InternalServer").start();
+
             Minecraft mc = new(1920, 1080, false);
             java.lang.Thread var8 = new(mc, "Minecraft main thread");
             var8.setPriority(10);
