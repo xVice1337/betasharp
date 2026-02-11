@@ -18,7 +18,6 @@ using betareborn.Items;
 using betareborn.Launcher;
 using betareborn.Profiling;
 using betareborn.Server.Internal;
-using betareborn.Server.Threading;
 using betareborn.Stats;
 using betareborn.Util.Hit;
 using betareborn.Util.Maths;
@@ -33,10 +32,11 @@ using Silk.NET.Input;
 using Silk.NET.OpenGL.Legacy;
 using Silk.NET.OpenGL.Legacy.Extensions.ImGui;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace betareborn
 {
-    public class Minecraft : java.lang.Object, Runnable
+    public partial class Minecraft : java.lang.Object, Runnable
     {
         public static Minecraft INSTANCE;
         public PlayerController playerController;
@@ -111,6 +111,30 @@ namespace betareborn
             INSTANCE = this;
         }
 
+        [LibraryImport("winmm.dll", EntryPoint = "timeBeginPeriod")]
+        private static partial uint TimeBeginPeriod(uint period);
+
+        [LibraryImport("winmm.dll", EntryPoint = "timeEndPeriod")]
+        private static partial uint TimeEndPeriod(uint period);
+
+        private static readonly bool IsWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+
+        public void InitializeTimer()
+        {
+            if (IsWindows)
+            {
+                TimeBeginPeriod(1);
+            }
+        }
+
+        public void CleanupTimer()
+        {
+            if (IsWindows)
+            {
+                TimeEndPeriod(1);
+            }
+        }
+
         public void onMinecraftCrash(UnexpectedThrowable var1)
         {
             hasCrashed = true;
@@ -130,6 +154,8 @@ namespace betareborn
 
         public unsafe void startGame()
         {
+            InitializeTimer();
+
             if (fullscreen)
             {
                 Display.setFullscreen(true);
@@ -470,6 +496,8 @@ namespace betareborn
             finally
             {
                 Display.destroy();
+                CleanupTimer();
+
                 if (!hasCrashed)
                 {
                     java.lang.System.exit(0);
@@ -862,7 +890,7 @@ namespace betareborn
                 internalServer.stop();
                 while (!internalServer.stopped)
                 {
-                    java.lang.Thread.sleep(1);
+                    System.Threading.Thread.Sleep(1);
                 }
                 internalServer = null;
             }
