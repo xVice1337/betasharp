@@ -34,6 +34,7 @@ namespace betareborn.Server
         public bool spawnAnimals;
         public bool pvpEnabled;
         public bool flightEnabled;
+        protected bool logHelp = true;
 
         public MinecraftServer(IServerConfiguration config)
         {
@@ -71,7 +72,12 @@ namespace betareborn.Server
 
             LOGGER.info("Preparing level \"" + var7 + "\"");
             loadWorld(new RegionWorldStorageSource(getFile(".")), var7, var9);
-            LOGGER.info("Done (" + (java.lang.System.nanoTime() - var5) + "ns)! For help, type \"help\" or \"?\"");
+
+            if (logHelp)
+            {
+                LOGGER.info("Done (" + (java.lang.System.nanoTime() - var5) + "ns)! For help, type \"help\" or \"?\"");
+            }
+
             return true;
         }
 

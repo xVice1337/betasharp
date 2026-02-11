@@ -25,6 +25,7 @@ namespace betareborn.Server.Internal
         public InternalServer(string worldPath, string levelName, string seed, int viewDistance) : base(new InternalServerConfiguration(levelName, seed, viewDistance))
         {
             this.worldPath = worldPath;
+            logHelp = false;
         }
 
         public void SetViewDistance(int viewDistanceChunks)
