@@ -44,14 +44,12 @@ public class ScreenShotHelper
                 int dstOffset = y * rowStride;
                 Buffer.BlockCopy(rgbPixels, srcOffset, flipped, dstOffset, rowStride);
             }
-
-            /*
+            
             using (Image<Rgb24> image = Image.LoadPixelData<Rgb24>(flipped, width, height))
             {
                 image.SaveAsPng(fullPath);
             }
 
-            */
             return "Saved screenshot as " + fileName;
         }
         catch (Exception ex)
