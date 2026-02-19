@@ -149,7 +149,7 @@ public class RegionWorldStorageSource
             {
                 Directory.Delete(worldPath, true);
             }
-            catch (IOException ex)
+            catch (Exception ex)
             {
                 Log.Error($"Failed to delete world {worldFolderName}: {ex.Message}");
             }
