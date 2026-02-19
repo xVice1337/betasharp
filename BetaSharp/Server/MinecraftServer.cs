@@ -99,7 +99,7 @@ public abstract class MinecraftServer : Runnable, CommandOutput
         }
 
         Log.Info($"Preparing level \"{var7}\"");
-        loadWorld(new RegionWorldStorageSource(System.IO.Path.GetFullPath("./")), var7, worldSeed);
+        loadWorld(new RegionWorldStorageSource(getFile(".").getAbsolutePath()), var7, worldSeed);
 
         if (logHelp)
         {
@@ -109,12 +109,10 @@ public abstract class MinecraftServer : Runnable, CommandOutput
         return true;
     }
 
-
-
     private void loadWorld(RegionWorldStorageSource storageSource, string worldDir, long seed)
     {
         worlds = new ServerWorld[2];
-        RegionWorldStorage var5 = new RegionWorldStorage(System.IO.Path.GetFullPath("./"), worldDir, true);
+        RegionWorldStorage var5 = new RegionWorldStorage(getFile(".").getAbsolutePath(), worldDir, true);
 
         for (int var6 = 0; var6 < worlds.Length; var6++)
         {
