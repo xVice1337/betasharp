@@ -64,7 +64,7 @@ public class RegionWorldStorage : IWorldStorage, IPlayerSaveHandler
         catch (IOException ex)
         {
             Log.Error($"Failed to write session lock: {ex.Message}");
-            throw new Exception("Failed to check session lock, aborting", ex);
+            throw new Exception("Failed to write session lock, aborting", ex);
         }
     }
 
@@ -77,7 +77,16 @@ public class RegionWorldStorage : IWorldStorage, IPlayerSaveHandler
 
             using FileStream fs = File.OpenRead(lockFile);
             byte[] bytes = new byte[8];
-            fs.Read(bytes, 0, 8);
+            int bytesRead = 0;
+            while (bytesRead < bytes.Length)
+            {
+                int n = fs.Read(bytes, bytesRead, bytes.Length - bytesRead);
+                if (n == 0)
+                {
+                    throw new Exception("Failed to check session lock, aborting");
+                }
+                bytesRead += n;
+            }
 
             if (BitConverter.IsLittleEndian) Array.Reverse(bytes);
             long diskTime = BitConverter.ToInt64(bytes, 0);

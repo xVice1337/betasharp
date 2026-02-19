@@ -22,7 +22,14 @@ public class PersistentStateManager
     {
         if (_loadedDataMap.TryGetValue(name, out PersistentState existing))
         {
-            return (T)existing;
+            if (existing is T typed)
+            {
+                return typed;
+            }
+
+            throw new InvalidOperationException(
+                $"Persistent state '{name}' is already loaded as type '{existing.GetType().FullName}', " +
+                $"which is incompatible with the requested type '{typeof(T).FullName}'.");
         }
 
         T state = null;

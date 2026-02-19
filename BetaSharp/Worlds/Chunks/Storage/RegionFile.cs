@@ -210,7 +210,16 @@ public class RegionFile : IDisposable
     private int ReadBigEndianInt()
     {
         byte[] bytes = new byte[4];
-        _dataFile.Read(bytes, 0, 4);
+        int totalRead = 0;
+        while (totalRead < 4)
+        {
+            int bytesRead = _dataFile.Read(bytes, totalRead, 4 - totalRead);
+            if (bytesRead == 0)
+            {
+                throw new EndOfStreamException("Unexpected end of stream while reading 4-byte big-endian integer.");
+            }
+            totalRead += bytesRead;
+        }
         if (BitConverter.IsLittleEndian) Array.Reverse(bytes);
         return BitConverter.ToInt32(bytes, 0);
     }
